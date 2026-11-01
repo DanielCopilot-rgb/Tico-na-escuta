@@ -1,0 +1,1030 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Tico, o lobo azul</title>
+<style>
+/* Tico ocupa a tela inteira. Os controles ficam discretos embaixo. */
+:root {
+  --fundo: #0b1020;
+  --fundo-2: #151d36;
+  --texto: #e9eefb;
+  --discreto: #8792ab;
+  --azul: #4d7fe0;
+  --azul-claro: #a9c8ff;
+  --humor: #4d7fe0;
+  --vermelho: #e0654d;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --fundo: #eef2fa;
+    --fundo-2: #dfe7f7;
+    --texto: #1b2236;
+    --discreto: #5a6480;
+    --azul: #3b6fd8;
+    --azul-claro: #9cc0ff;
+    --vermelho: #c94a33;
+    color-scheme: light;
+  }
+}
+:root[data-theme="dark"] {
+  --fundo: #0b1020;
+  --fundo-2: #151d36;
+  --texto: #e9eefb;
+  --discreto: #8792ab;
+  --azul: #4d7fe0;
+  --azul-claro: #a9c8ff;
+  --vermelho: #e0654d;
+  color-scheme: dark;
+}
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  overflow: hidden;
+}
+#mundo {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at 50% 42%, color-mix(in srgb, var(--humor) 28%, var(--fundo-2)) 0%, var(--fundo) 70%);
+  transition: background 1.2s ease, filter 2.5s ease;
+  padding: max(20px, env(safe-area-inset-top, 0px)) 16px max(20px, env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+}
+#mundo.dormindo { filter: brightness(0.45) saturate(0.6); }
+
+#fala {
+  min-height: 2.6em;
+  max-width: 420px;
+  text-align: center;
+  font-size: 1.1rem;
+  line-height: 1.45;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  margin-bottom: 12px;
+}
+#fala.visivel { opacity: 1; }
+#fala.baixo { opacity: 0.5; font-style: italic; }
+
+#tico { position: relative; width: 230px; height: 230px; }
+#tico .orelha { position: absolute; top: 4px; width: 0; height: 0; border-left: 30px solid transparent; border-right: 30px solid transparent; border-bottom: 60px solid var(--azul); }
+#tico .orelha.e { left: 30px; transform: rotate(-12deg); }
+#tico .orelha.d { right: 30px; transform: rotate(12deg); }
+#tico .cabeca { position: absolute; left: 26px; right: 26px; top: 36px; height: 146px; background: var(--azul); border-radius: 50% 50% 46% 46%; box-shadow: 0 0 60px color-mix(in srgb, var(--humor) 40%, transparent); }
+#tico .focinho { position: absolute; left: 76px; right: 76px; top: 128px; height: 56px; background: var(--azul-claro); border-radius: 0 0 50% 50%; }
+#tico .nariz { position: absolute; left: 102px; top: 136px; width: 20px; height: 13px; background: #161b2c; border-radius: 50%; }
+#tico .olhos { position: absolute; left: 54px; right: 54px; top: 78px; display: flex; justify-content: space-between; }
+#tico .olho { width: 24px; height: 30px; background: #fff; border-radius: 50%; position: relative; transition: height 0.3s, border-radius 0.3s; }
+#tico .olho::after { content: ""; position: absolute; left: 7px; top: 9px; width: 10px; height: 12px; background: #161b2c; border-radius: 50%; transition: left 0.3s; }
+#tico .boca { position: absolute; left: 100px; top: 158px; width: 30px; height: 12px; border-bottom: 3px solid #161b2c; border-radius: 0 0 20px 20px; transition: height 0.3s; }
+
+#tico.feliz .olho { height: 16px; border-radius: 0 0 16px 16px; }
+#tico.feliz .olho::after { display: none; }
+#tico.feliz .boca { height: 18px; }
+#tico.curioso .olho { height: 36px; }
+#tico.curioso .olho::after { left: 6px; top: 6px; }
+#tico.triste .olho { height: 20px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; }
+#tico.triste .boca { border-bottom: none; border-top: 3px solid #161b2c; border-radius: 20px 20px 0 0; top: 166px; }
+#tico.sono .olho { height: 4px; border-radius: 4px; }
+#tico.sono .olho::after { display: none; }
+#tico.pensando .olho::after { animation: olhar 1.4s ease-in-out infinite; }
+#tico.falando .boca { animation: falar 0.35s ease-in-out infinite alternate; }
+#tico.respirar { animation: respirar 3.2s ease-in-out infinite; }
+@keyframes olhar { 0%,100% { left: 7px; } 50% { left: 1px; } }
+@keyframes falar { from { height: 6px; } to { height: 16px; } }
+@keyframes respirar { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-3px) scale(1.015); } }
+
+#controles { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.botao {
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0 18px;
+  min-height: 48px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--texto) 22%, transparent);
+  background: color-mix(in srgb, var(--fundo) 55%, transparent);
+  color: var(--texto);
+  cursor: pointer;
+}
+.botao[aria-pressed="true"] { background: var(--azul); border-color: var(--azul); color: #fff; }
+.botao.perigo[aria-pressed="true"] { background: var(--vermelho); border-color: var(--vermelho); }
+.botao:disabled { opacity: 0.4; cursor: default; }
+.botao:focus-visible, #entrada:focus-visible { outline: 2px solid var(--azul-claro); outline-offset: 2px; }
+
+#progresso { margin: 14px 0 0; font-size: 0.85rem; color: var(--discreto); text-align: center; font-variant-numeric: tabular-nums; min-height: 1.2em; }
+
+#entrada-linha { margin-top: 14px; width: 100%; max-width: 420px; display: flex; gap: 8px; }
+#entrada-linha[hidden] { display: none; }
+#entrada {
+  flex: 1; min-width: 0; font: inherit; font-size: 1rem; padding: 13px 18px; min-height: 48px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--texto) 18%, transparent);
+  background: color-mix(in srgb, var(--fundo) 60%, transparent);
+  color: var(--texto);
+  box-sizing: border-box;
+}
+#entrada::placeholder { color: var(--discreto); }
+#entrada:disabled { opacity: 0.4; }
+
+#aviso { position: fixed; left: 16px; right: 16px; bottom: max(8px, env(safe-area-inset-bottom, 0px)); text-align: center; font-size: 0.85rem; color: var(--discreto); margin: 0; }
+#aviso[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  #tico.respirar, #tico.falando .boca, #tico.pensando .olho::after { animation: none; }
+  #mundo, #mundo.dormindo { transition: none; }
+}
+</style>
+
+
+
+<main id="mundo" aria-label="Tico">
+  <p id="fala" aria-live="polite"></p>
+  <div id="tico" class="respirar" role="img" aria-label="Tico, lobo azul">
+    <div class="orelha e"></div>
+    <div class="orelha d"></div>
+    <div class="cabeca"></div>
+    <div class="olhos"><div class="olho"></div><div class="olho"></div></div>
+    <div class="focinho"></div>
+    <div class="nariz"></div>
+    <div class="boca"></div>
+  </div>
+  <div id="controles">
+    <button class="botao" id="btn-live" type="button" aria-pressed="false" disabled>Escutar: indisponível aqui</button>
+    <button class="botao" id="btn-mudo" type="button" aria-pressed="false">Voz: ligada</button>
+    <button class="botao" id="btn-reiniciar" type="button">Reiniciar</button>
+  </div>
+  <p id="progresso" aria-live="polite"></p>
+  <form id="entrada-linha">
+    <input id="entrada" type="text" placeholder="Diga algo ao Tico" autocomplete="off" aria-label="Mensagem para o Tico">
+  </form>
+</main>
+<p id="aviso" hidden></p>
+
+<script>
+// ---------- Constantes e estado ----------
+const BASE = { alegria: 50, curiosidade: 50, tedio: 20, afeto: 35, tristeza: 10 };
+const PADRAO = { energia: 80, emocoes: { ...BASE }, memorias: [], sons: [], silabas: [], palavras: [], assoc: {}, ultimaFala: null, dormindo: false, primeiroSono: false, ultimoIniciou: 0 };
+const COR_HUMOR = { alegria: '#f2c94c', curiosidade: '#56ccf2', tedio: '#8792ab', afeto: '#f28db2', tristeza: '#3d5a9e' };
+const CHAVE = 'tico-estado-v1';
+
+const N_FFT = 2048;          // janela de analise (igual ao analisador do microfone)
+const CEPSTRO_Q = 14;        // coeficientes do envelope espectral (descarta o pitch)
+const F_MIN = 100, F_MAX = 4000;
+const LIMIAR_JA = 0.07;      // reconhecimento por sintese: abaixo disso, e o mesmo som (calibrado no simulador)
+const LIMIAR_IMITA = 0.25;   // abaixo disso, a imitacao conta como aprendida
+const ITER_IMITA = 60;       // tentativas de imitacao por som ouvido
+const FASE2_SONS = 5;        // quantos itens confirmados ate a proxima fase
+const CONF = 2;              // vezes (ouvido ou usado) para um item ficar confirmado
+const CONSOANTES = [
+  { nome: 'p', tipo: 'burst', freq: 900 },
+  { nome: 't', tipo: 'burst', freq: 2500 },
+  { nome: 's', tipo: 'burst', freq: 3800 },
+  { nome: 'm', tipo: 'nasal', freq: 250 },
+];
+
+let estado = carregar();
+garantirIds();
+let ocupado = false;
+let ao_vivo = false;         // escuta ligada
+let mudo = false;            // Tico fica quieto: sem voz e sem texto
+let reconhecedor = null;
+let ctx = null;
+let falandoSom = false;      // Tico esta emitindo um som: nao se ouve
+let micStream = null, analyser = null, freqBuf = null, timeBuf = null, loopMic = null;
+let segFrames = [], segF0 = [], silencio = 0;
+let aprendendo = false;
+
+const el = id => document.getElementById(id);
+const esperar = ms => new Promise(r => setTimeout(r, ms));
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const escolher = arr => arr[Math.floor(Math.random() * arr.length)];
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
+function semAcento(s) { return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+
+function garantirCtx() {
+  // 22050 Hz: a analise foi calibrada nessa taxa; o navegador reamostra o microfone
+  if (!ctx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    try { ctx = new AC({ sampleRate: 22050 }); } catch (e) { ctx = new AC(); }
+  }
+  if (ctx.state === 'suspended') ctx.resume();
+  return ctx;
+}
+
+// Memoria fica salva neste aparelho e neste navegador
+function carregar() {
+  try {
+    const s = localStorage.getItem(CHAVE);
+    return s ? { ...clone(PADRAO), ...JSON.parse(s) } : clone(PADRAO);
+  } catch (e) {
+    return clone(PADRAO);
+  }
+}
+
+function salvar() {
+  try { localStorage.setItem(CHAVE, JSON.stringify(estado)); } catch (e) {}
+}
+
+function mostrarAviso(texto) {
+  el('aviso').textContent = texto;
+  el('aviso').hidden = false;
+}
+
+function progresso(texto) {
+  el('progresso').textContent = texto;
+}
+
+function atualizarProgresso() {
+  const f = fase();
+  const v = confirmados(estado.sons).length, sl = confirmados(estado.silabas).length, pl = confirmados(estado.palavras).length;
+  progresso(`Fase ${f} · vogais ${v}/${FASE2_SONS} · sílabas ${sl}/${FASE2_SONS} · palavras ${pl}`);
+}
+
+// ---------- Sintese: cada som e uma vogal-like feita com onda e filtros ----------
+function som(c, destino, f0, F, inicio, dur) {
+  const saida = c.createGain();
+  saida.gain.value = 0.35;
+  saida.connect(destino);
+
+  const osc = c.createOscillator();
+  osc.type = 'sawtooth';
+  osc.frequency.value = f0;
+
+  const env = c.createGain();
+  env.gain.setValueAtTime(0.0001, inicio);
+  env.gain.exponentialRampToValueAtTime(0.6, inicio + 0.03);
+  env.gain.setValueAtTime(0.6, inicio + Math.max(0.031, dur - 0.08));
+  env.gain.exponentialRampToValueAtTime(0.0001, inicio + dur);
+  osc.connect(env);
+
+  [1, 0.6, 0.3].forEach((peso, i) => {
+    const f = c.createBiquadFilter();
+    f.type = 'bandpass';
+    f.frequency.value = F[i];
+    f.Q.value = 6;
+    const g = c.createGain();
+    g.gain.value = peso * 2;
+    env.connect(f);
+    f.connect(g);
+    g.connect(saida);
+  });
+
+  osc.start(inicio);
+  osc.stop(inicio + dur + 0.05);
+}
+
+// Fase 1: vogais. Fase 2: silabas (consoante + vogal). Fase 3: palavras (silabas juntas).
+function confirmado(x) { return x.vezes >= CONF || (x.usos || 0) >= 4; }
+function confirmados(lista) { return lista.filter(confirmado); }
+function itensTodos() { return [...estado.sons, ...estado.silabas, ...estado.palavras]; }
+function fase() {
+  if (confirmados(estado.sons).length < FASE2_SONS) return 1;
+  if (confirmados(estado.silabas).length < FASE2_SONS) return 2;
+  return 3;
+}
+
+function tocarItem(c, dest, it, t) {
+  if (it.tipo === 'palavra') it.partes.forEach((pt, i) => tocarSilaba(c, dest, pt, t + i * 0.3));
+  else if (it.tipo === 'silaba') tocarSilaba(c, dest, it, t);
+  else som(c, dest, it.p.f0, [it.p.f1, it.p.f2, it.p.f3], t, it.dur || 0.26);
+}
+
+// Tico fala com os sons que tem, conforme a fase. Sem sons ainda, inventa um.
+function somConsoante(c, dest, cons, t) {
+  const sr = c.sampleRate, n = Math.floor(sr * 0.06);
+  const buf = c.createBuffer(1, n, sr);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < n; i++) {
+    d[i] = cons.tipo === 'burst'
+      ? (Math.random() * 2 - 1) * Math.exp(-i / (sr * 0.012))
+      : 0.5 * Math.sin(2 * Math.PI * cons.freq * i / sr) * Math.exp(-i / (sr * 0.03));
+  }
+  const src = c.createBufferSource();
+  src.buffer = buf;
+  const f = c.createBiquadFilter();
+  f.type = 'bandpass';
+  f.frequency.value = cons.freq;
+  f.Q.value = 1.5;
+  src.connect(f);
+  f.connect(dest);
+  src.start(t);
+}
+
+function tocarSilaba(c, dest, it, t) {
+  somConsoante(c, dest, it.cons, t);
+  som(c, dest, it.p.f0, [it.p.f1, it.p.f2, it.p.f3], t + 0.05, 0.26);
+}
+
+async function renderItem(it) {
+  const dur = it.tipo === 'palavra' ? 0.3 * it.partes.length + 0.1 : (it.dur || 0.35);
+  const c = garantirCtx();
+  const oc = new OfflineAudioContext(1, Math.ceil(c.sampleRate * dur), c.sampleRate);
+  tocarItem(oc, oc.destination, it, 0);
+  const buf = await oc.startRendering();
+  return buf.getChannelData(0);
+}
+
+// Cria um item novo se nao for parecido com outro da mesma lista
+async function criarItem(it, lista) {
+  if (lista.length >= 40) return null;
+  it.f = Array.from(caracteristicas(quadrosDeAmostras(await renderItem(it)), garantirCtx().sampleRate));
+  for (const x of lista) if (distancia(it.f, x.f) < LIMIAR_JA) { x.vezes += 1; salvar(); return null; }
+  it.id = it.id || novoId();
+  lista.push(it);
+  salvar();
+  atualizarProgresso();
+  return it;
+}
+
+async function inventarSilaba() {
+  if (!estado.sons.length) return;
+  const v = escolher(estado.sons);
+  const it = { tipo: 'silaba', cons: escolher(CONSOANTES), p: v.p, vezes: 0, usos: 0, origem: 'balbucio' };
+  await criarItem(it, estado.silabas);
+}
+
+async function inventarPalavra() {
+  const base = confirmados(estado.silabas);
+  if (base.length < 2) return;
+  const a = escolher(base), b = escolher(base);
+  const it = { tipo: 'palavra', partes: [{ cons: a.cons, p: a.p }, { cons: b.cons, p: b.p }], vezes: 0, usos: 0, origem: 'balbucio' };
+  await criarItem(it, estado.palavras);
+}
+
+// Gera algo novo conforme a fase atual
+function gerarNovo() {
+  if (mudo || estado.dormindo || ocupado) return;
+  const f = fase();
+  if (f === 1) explorar();
+  else if (f === 2) inventarSilaba();
+  else if (Math.random() < 0.5) inventarPalavra();
+  else inventarSilaba();
+}
+
+// Balbucio exploratorio: Tico gera um som novo, toca e guarda o que soou
+function explorar() {
+  if (mudo || estado.dormindo) return;
+  const c = garantirCtx();
+  const p = {
+    f0: 90 + Math.random() * 250,
+    f1: 250 + Math.random() * 700,
+    f2: 900 + Math.random() * 1900,
+    f3: 2200 + Math.random() * 1200,
+  };
+  registrarSomProprio(p);
+}
+
+async function registrarSomProprio(p) {
+  const x = await renderizar(p, 0.3);
+  const f = Array.from(caracteristicas(quadrosDeAmostras(x), garantirCtx().sampleRate));
+  let perto = null, dmin = Infinity;
+  for (const s of estado.sons) {
+    const d = distancia(f, s.f);
+    if (d < dmin) { dmin = d; perto = s; }
+  }
+  if (perto && dmin < LIMIAR_JA) {
+    perto.vezes += 1;
+  } else if (estado.sons.length < 40) {
+    estado.sons.push({ p, f, vezes: 1, origem: 'balbucio', id: novoId() });
+  }
+  salvar();
+  atualizarProgresso();
+}
+
+// ---------- Analise espectral ----------
+function fft(re, im) {
+  const n = re.length;
+  for (let i = 1, j = 0; i < n; i++) {
+    let bit = n >> 1;
+    for (; j & bit; bit >>= 1) j ^= bit;
+    j ^= bit;
+    if (i < j) {
+      [re[i], re[j]] = [re[j], re[i]];
+      [im[i], im[j]] = [im[j], im[i]];
+    }
+  }
+  for (let len = 2; len <= n; len <<= 1) {
+    const ang = -2 * Math.PI / len;
+    const wr = Math.cos(ang), wi = Math.sin(ang);
+    for (let i = 0; i < n; i += len) {
+      let cr = 1, ci = 0;
+      for (let j = 0; j < len / 2; j++) {
+        const a = i + j, b = a + len / 2;
+        const vr = re[b] * cr - im[b] * ci;
+        const vi = re[b] * ci + im[b] * cr;
+        re[b] = re[a] - vr; im[b] = im[a] - vi;
+        re[a] += vr; im[a] += vi;
+        const ncr = cr * wr - ci * wi;
+        ci = cr * wi + ci * wr;
+        cr = ncr;
+      }
+    }
+  }
+}
+
+// Magnitudes de cada janela, a partir das amostras de audio
+function quadrosDeAmostras(x) {
+  const N = N_FFT, H = 512;
+  const quadros = [];
+  const re = new Float64Array(N), im = new Float64Array(N);
+  for (let s = 0; s + N <= x.length; s += H) {
+    for (let i = 0; i < N; i++) {
+      re[i] = x[s + i] * (0.5 - 0.5 * Math.cos(2 * Math.PI * i / N));
+      im[i] = 0;
+    }
+    fft(re, im);
+    const mag = new Float32Array(N / 2);
+    for (let k = 0; k < N / 2; k++) mag[k] = Math.hypot(re[k], im[k]);
+    quadros.push(mag);
+  }
+  return quadros;
+}
+
+// Envelope espectral (cepstro sobre o eixo de frequencia): descarta o pitch e guarda a forma das vogais
+function caracteristicas(quadros, sr) {
+  const kLo = Math.ceil(F_MIN * N_FFT / sr);
+  const kHi = Math.floor(F_MAX * N_FFT / sr);
+  const K = kHi - kLo + 1;
+  const c = new Float64Array(CEPSTRO_Q);
+  if (!quadros.length) return c;
+  const L = new Float64Array(K);
+  for (let k = 0; k < K; k++) {
+    let soma = 0;
+    for (const q of quadros) soma += q[kLo + k];
+    L[k] = Math.log(soma / quadros.length + 1e-6);
+  }
+  const m = L.reduce((a, b) => a + b, 0) / K;
+  for (let qi = 1; qi <= CEPSTRO_Q; qi++) {
+    let s = 0;
+    for (let k = 0; k < K; k++) s += (L[k] - m) * Math.cos(Math.PI * qi * (k + 0.5) / K);
+    c[qi - 1] = s / K;
+  }
+  return c;
+}
+
+function distancia(a, b) {
+  let s = 0;
+  for (let i = 0; i < CEPSTRO_Q; i++) s += (a[i] - b[i]) ** 2;
+  return Math.sqrt(s / CEPSTRO_Q);
+}
+
+// ---------- Renderizacao de um som candidato, para comparar com o que ouviu ----------
+async function renderizar(p, dur) {
+  const c = garantirCtx();
+  const oc = new OfflineAudioContext(1, Math.ceil(c.sampleRate * dur), c.sampleRate);
+  som(oc, oc.destination, p.f0, [p.f1, p.f2, p.f3], 0, dur);
+  const buf = await oc.startRendering();
+  return buf.getChannelData(0);
+}
+
+async function pontuar(p, H, dur) {
+  const x = await renderizar(p, dur);
+  const f = caracteristicas(quadrosDeAmostras(x), garantirCtx().sampleRate);
+  return distancia(f, H);
+}
+
+function variar(p, temperatura) {
+  const faixas = { f0: [70, 400], f1: [200, 1000], f2: [600, 2800], f3: [1800, 3800] };
+  const q = {};
+  for (const k of Object.keys(faixas)) {
+    const [min, max] = faixas[k];
+    const g = Math.sqrt(-2 * Math.log(1 - Math.random())) * Math.cos(2 * Math.PI * Math.random());
+    q[k] = clamp(p[k] * Math.exp(g * temperatura), min, max);
+  }
+  return q;
+}
+
+// ---------- Aprendizado: tenta imitar o que ouviu e guarda o que funcionou ----------
+async function imitar(H, dur, f0 = 150) {
+  let melhor = { f0: f0 > 0 ? f0 : 150, f1: 500, f2: 1500, f3: 2500 };
+  let s = await pontuar(melhor, H, dur);
+  for (let i = 1; i <= ITER_IMITA; i++) {
+    const temp = 0.35 * (1 - i / ITER_IMITA) + 0.03;
+    const q = variar(melhor, temp);
+    const sq = await pontuar(q, H, dur);
+    if (sq < s) { melhor = q; s = sq; }
+    if (i % 4 === 0) await esperar(0);
+  }
+  return { p: melhor, s };
+}
+
+// Renderiza um item na altura ouvida (para comparar com o que ouviu)
+async function itemNaAltura(it, f0, dur) {
+  const alt = (p) => ({ ...p, f0 });
+  let copia;
+  if (it.tipo === 'palavra') copia = { tipo: 'palavra', partes: it.partes.map(pt => ({ cons: pt.cons, p: alt(pt.p) })) };
+  else if (it.tipo === 'silaba') copia = { tipo: 'silaba', cons: it.cons, p: alt(it.p) };
+  else copia = { p: alt(it.p), dur };
+  return caracteristicas(quadrosDeAmostras(await renderItem(copia)), garantirCtx().sampleRate);
+}
+
+async function aprender(H, dur, f0) {
+  if (!H || aprendendo || estado.dormindo) return;
+
+  // Reconhece por sintese: sintetiza cada som conhecido na mesma altura e ve qual soa mais parecido
+  const todos = itensTodos();
+  if (todos.length && f0 > 0) {
+    let bom = null, bd = Infinity;
+    for (const it of todos) {
+      const d = distancia(H, await itemNaAltura(it, f0, dur));
+      if (d < bd) { bd = d; bom = it; }
+    }
+    if (bd < LIMIAR_JA) {
+      bom.vezes += 1;
+      salvar();
+      atualizarProgresso();
+      return;
+    }
+  }
+  if (fase() !== 1) {
+    progresso('Ouvi algo que ainda não reconheço. Continuo praticando.');
+    return;
+  }
+
+  aprendendo = true;
+  progresso('Ouvi um som novo. Tentando imitar...');
+  const r = await imitar(H, dur, f0);
+  if (r.s < LIMIAR_IMITA) {
+    estado.sons.push({ p: r.p, f: Array.from(H), vezes: 1, origem: 'ouvido', id: novoId() });
+    progresso(`Aprendi um som novo. Sons aprendidos: ${estado.sons.length}`);
+  } else {
+    progresso('Não consegui imitar esse som. Vou tentar com o próximo.');
+  }
+  aprendendo = false;
+  salvar();
+}
+
+// ---------- Microfone: ouve trechos de voz e os envia para aprender ----------
+function iniciarMicrofone(stream) {
+  const c = garantirCtx();
+  const origem = c.createMediaStreamSource(stream);
+  analyser = c.createAnalyser();
+  analyser.fftSize = N_FFT;
+  origem.connect(analyser);
+  freqBuf = new Float32Array(analyser.frequencyBinCount);
+  timeBuf = new Float32Array(analyser.fftSize);
+  micStream = stream;
+  segFrames = [];
+  silencio = 0;
+  if (!loopMic) loopMic = setInterval(ouvirPassada, 100);
+}
+
+function pararMicrofone() {
+  if (micStream) micStream.getTracks().forEach(t => t.stop());
+  micStream = null;
+  analyser = null;
+  segFrames = [];
+}
+
+function ouvirPassada() {
+  if (!analyser || !ao_vivo || falandoSom || estado.dormindo) {
+    segFrames = [];
+    segF0 = [];
+    silencio = 0;
+    return;
+  }
+  analyser.getFloatTimeDomainData(timeBuf);
+  let soma = 0;
+  for (const v of timeBuf) soma += v * v;
+  const rms = Math.sqrt(soma / timeBuf.length);
+  if (rms > 0.02) {
+    analyser.getFloatFrequencyData(freqBuf);
+    const lin = new Float32Array(freqBuf.length);
+    for (let k = 0; k < freqBuf.length; k++) lin[k] = Math.pow(10, freqBuf[k] / 20);
+    segFrames.push(lin);
+    const f0 = estimarF0(timeBuf, garantirCtx().sampleRate);
+    if (f0 > 0) segF0.push(f0);
+    silencio = 0;
+    if (segFrames.length >= 15) fecharTrecho();
+  } else if (segFrames.length) {
+    silencio += 100;
+    if (silencio >= 300) fecharTrecho();
+  }
+}
+
+function fecharTrecho() {
+  const frames = segFrames, alturas = segF0.slice().sort((a, b) => a - b);
+  segFrames = [];
+  segF0 = [];
+  silencio = 0;
+  if (frames.length < 4) return;
+  const dur = clamp(frames.length * 0.1, 0.2, 1.0);
+  const f0 = alturas.length ? alturas[Math.floor(alturas.length / 2)] : 0;
+  const sr = garantirCtx().sampleRate;
+  aprender(caracteristicas(frames, sr), dur, f0);
+}
+
+// Altura por autocorrelacao (80 a 400 Hz). Escolhe o menor atraso com correlacao quase maxima,
+// para nao pegar o submultiplo (uma oitava abaixo).
+function estimarF0(x, sr) {
+  const minLag = Math.floor(sr / 400), maxLag = Math.floor(sr / 80);
+  let energia = 0;
+  for (let i = 0; i < x.length; i++) energia += x[i] * x[i];
+  if (energia < 1e-9) return 0;
+  const r = [];
+  for (let lag = minLag; lag <= maxLag; lag++) {
+    let s = 0, e1 = 0, e2 = 0;
+    for (let i = 0; i + lag < x.length; i++) {
+      s += x[i] * x[i + lag];
+      e1 += x[i] * x[i];
+      e2 += x[i + lag] * x[i + lag];
+    }
+    r.push(s / Math.sqrt(e1 * e2 + 1e-12));
+  }
+  const maxR = Math.max(...r);
+  const idx = r.findIndex(v => v >= 0.9 * maxR);
+  let melhor = idx;
+  for (let j = idx; j < r.length && r[j] >= r[idx] * 0.97; j++) if (r[j] > r[melhor]) melhor = j;
+  return maxR > 0.5 ? sr / (minLag + melhor) : 0;
+}
+
+// ---------- Corpo e humor ----------
+function dominante() {
+  return Object.entries(estado.emocoes).sort((a, b) => b[1] - a[1])[0][0];
+}
+
+const EXPRESSAO = { alegria: 'feliz', afeto: 'feliz', curiosidade: 'curioso', tristeza: 'triste', tedio: '' };
+
+function expressao(nome) {
+  el('tico').className = (nome ? nome + ' ' : '') + (estado.dormindo ? 'sono' : 'respirar');
+}
+
+function atualizarAmbiente() {
+  const d = dominante();
+  document.documentElement.style.setProperty('--humor', COR_HUMOR[d] || '#4d7fe0');
+  el('mundo').classList.toggle('dormindo', estado.dormindo);
+  el('entrada').disabled = ocupado || estado.dormindo;
+}
+
+function atualizarBotoes() {
+  const live = el('btn-live');
+  live.setAttribute('aria-pressed', String(ao_vivo));
+  live.textContent = ao_vivo ? 'Escutar: ligado' : 'Escutar: desligado';
+  if (live.disabled) live.textContent = 'Escutar: indisponível aqui';
+  const mudoBtn = el('btn-mudo');
+  mudoBtn.setAttribute('aria-pressed', String(mudo));
+  mudoBtn.textContent = mudo ? 'Voz: muda' : 'Voz: ligada';
+  mudoBtn.classList.toggle('perigo', mudo);
+}
+
+// Quando mudo, Tico nao fala, nao mostra texto e nao emite som: fica so com a expressao.
+function falar(texto, opcoes = {}) {
+  if (mudo) {
+    el('fala').classList.remove('visivel');
+    return;
+  }
+  const f = el('fala');
+  f.textContent = texto;
+  f.classList.toggle('baixo', !!opcoes.baixo);
+  f.classList.add('visivel');
+  el('tico').classList.toggle('falando', !!opcoes.ritmo);
+}
+
+function falarPorUmTempo(texto, ms = 4500, opcoes = {}) {
+  falar(texto, opcoes);
+  setTimeout(() => {
+    if (!ocupado && !estado.dormindo) el('fala').classList.remove('visivel');
+  }, ms);
+}
+
+// ---------- Emocoes e memoria ----------
+function emocao(nome, delta) {
+  estado.emocoes[nome] = clamp(estado.emocoes[nome] + delta, 0, 100);
+}
+
+function acalmar() {
+  for (const k of Object.keys(BASE)) estado.emocoes[k] += (BASE[k] - estado.emocoes[k]) * 0.2;
+  estado.emocoes.tristeza *= 0.7;
+}
+
+function consolidar() {
+  const porTexto = new Map();
+  for (const m of estado.memorias) {
+    const chave = semAcento(m.texto);
+    if (porTexto.has(chave)) porTexto.get(chave).vezes += m.vezes;
+    else porTexto.set(chave, { ...m });
+  }
+  let lista = [...porTexto.values()].sort((a, b) => b.vezes - a.vezes || b.quando - a.quando);
+  const antes = estado.memorias.length;
+  lista = lista.slice(0, 120);
+  estado.memorias = lista;
+  return antes - lista.length;
+}
+
+function associar(palavras) {
+  const interesse = palavras.filter(p => p.length > 3);
+  let melhor = null, pontos = 0;
+  for (const m of estado.memorias) {
+    const comum = m.palavras.filter(p => interesse.includes(p)).length;
+    if (comum > pontos) { pontos = comum; melhor = m; }
+  }
+  return melhor;
+}
+
+// ---------- Sono ----------
+async function dormir(motivo) {
+  ocupado = true;
+  estado.dormindo = true;
+  atualizarAmbiente();
+  expressao('sono');
+  salvar();
+
+  const abertura = motivo === 'primeiro'
+    ? 'Vou dormir agora, pela primeira vez. Vou organizar o que vi.'
+    : motivo === 'cansaço' ? 'Estou cansado. Vou dormir.' : 'Vou continuar dormindo...';
+  falar(abertura, { baixo: true, voz: false });
+
+  let ciclo = 0;
+  do {
+    ciclo++;
+    await esperar(1800);
+    const apagadas = consolidar();
+    falar(`...juntando o que lembro (${estado.memorias.length} memórias${apagadas ? `, ${apagadas} repetidas unidas` : ''})...`, { baixo: true, voz: false });
+    await esperar(2000);
+
+    acalmar();
+    falar(`...as emoções estão voltando... agora sinto mais ${nomeEmocao(dominante())}...`, { baixo: true, voz: false });
+    await esperar(2000);
+
+    estado.energia = clamp(estado.energia + 18, 0, 100);
+    salvar();
+  } while (estado.energia < 70 && ciclo < 8);
+
+  estado.dormindo = false;
+  estado.primeiroSono = true;
+  expressao(EXPRESSAO[dominante()]);
+  atualizarAmbiente();
+  falarPorUmTempo(`Acordei. Lembro de ${estado.memorias.length} coisas.`, 6000);
+  ocupado = false;
+  atualizarAmbiente();
+  salvar();
+}
+
+function nomeEmocao(k) {
+  return { alegria: 'alegria', curiosidade: 'curiosidade', tedio: 'tédio', afeto: 'carinho', tristeza: 'tristeza' }[k] || k;
+}
+
+// ---------- Pensamento: contexto -> acao, aprendido com a reacao de quem conversa ----------
+const POSITIVAS = /\b(sim|isso|boa|bom|legal|otimo|gostei|muito|oi|ola|feliz|haha|kkk|ahh|aham)\b/;
+const NEGATIVAS = /\b(nao|para|errado|chato|pare|sai|chega)\b/;
+
+function novoId() { return 'i' + Math.random().toString(36).slice(2, 9); }
+function garantirIds() {
+  for (const lista of [estado.sons, estado.silabas, estado.palavras]) {
+    for (const it of lista) if (!it.id) it.id = novoId();
+  }
+}
+function tokens(texto) { return (semAcento(texto).match(/[a-z]{2,}/g) || []).slice(0, 6); }
+function polaridade(texto) {
+  const n = semAcento(texto);
+  if (NEGATIVAS.test(n)) return -1;
+  if (POSITIVAS.test(n)) return 1;
+  return 0.2;
+}
+// O que Tico percebe agora: palavras da conversa, o humor e o estado de energia
+function contexto(toks) {
+  return [...toks, 'emo:' + dominante(), estado.energia < 30 ? 'estado:cansado' : 'estado:acordado'];
+}
+
+// A reacao de quem conversa diz se a ultima fala deu certo naquele contexto
+function reforcar(peso) {
+  const u = estado.ultimaFala;
+  if (!u) return;
+  for (const t of u.ctx) {
+    const a = estado.assoc[t] || (estado.assoc[t] = {});
+    a[u.id] = (a[u.id] || 0) + peso;
+  }
+  estado.ultimaFala = null;
+}
+
+// Escolhe o item ligado as PALAVRAS da conversa. Humor e energia so desempatam.
+function melhorFala(ctx) {
+  let melhor = null, pontos = 0;
+  for (const it of confirmados(itensTodos())) {
+    let palavras = 0, geral = 0;
+    for (const t of ctx) {
+      const v = (estado.assoc[t] && estado.assoc[t][it.id]) || 0;
+      if (t.startsWith('emo:') || t.startsWith('estado:')) geral += v;
+      else palavras += v;
+    }
+    if (palavras <= 0) continue;
+    const s = palavras + 0.2 * geral;
+    if (s > pontos) { pontos = s; melhor = it; }
+  }
+  return melhor;
+}
+
+// Decide a acao: falar algo que ja funcionou, tentar uma hipotese, ou calar
+function pensar(texto) {
+  const ctx = contexto(tokens(texto));
+  const melhor = melhorFala(ctx);
+  if (melhor) return { acao: 'falar', it: melhor, ctx };
+  const pool = confirmados(itensTodos());
+  if (pool.length) return { acao: 'tentar', it: escolher(pool), ctx };
+  return { acao: 'calar', ctx };
+}
+
+function falarItem(it, ctx) {
+  if (mudo || !it) return;
+  const c = garantirCtx();
+  tocarItem(c, c.destination, it, c.currentTime + 0.05);
+  it.usos = (it.usos || 0) + 1;
+  const dur = it.tipo === 'palavra' ? 0.3 * it.partes.length + 0.2 : 0.4;
+  falandoSom = true;
+  setTimeout(() => { falandoSom = false; }, dur * 1000);
+  estado.ultimaFala = { id: it.id, ctx };
+  falar('...', { ritmo: true });
+  setTimeout(() => el('tico').classList.remove('falando'), dur * 1000);
+  salvar();
+}
+
+async function enviar(texto) {
+  ocupado = true;
+  atualizarAmbiente();
+  reforcar(polaridade(texto));
+  estado.energia = clamp(estado.energia - 2, 0, 100);
+
+  expressao('pensando');
+  await esperar(500 + (100 - estado.energia) * 12);
+
+  const chance = 0.4 + (estado.energia / 100) * 0.6;
+  const r = pensar(texto);
+  if (Math.random() > chance) {
+    expressao('sono');
+    falar('*boceja*');
+  } else if (r.acao === 'calar') {
+    expressao('curioso');
+    falar('...');
+  } else {
+    expressao(EXPRESSAO[dominante()]);
+    falarItem(r.it, r.ctx);
+  }
+
+  ocupado = false;
+  atualizarAmbiente();
+  salvar();
+
+  if (estado.energia <= 10) {
+    await esperar(2500);
+    await dormir('cansaço');
+  }
+}
+
+// ---------- Reconhecimento de fala: conversa por voz ----------
+function criarReconhecedor() {
+  const R = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!R) return null;
+  const r = new R();
+  r.lang = 'pt-BR';
+  r.continuous = true;
+  r.interimResults = false;
+  r.onresult = e => {
+    const ult = e.results[e.results.length - 1];
+    if (!ult.isFinal) return;
+    if (falandoSom) return; // nao ouve a propria voz
+    const t = ult[0].transcript.trim();
+    if (t && !ocupado && !estado.dormindo) enviar(t);
+  };
+  r.onend = () => {
+    if (ao_vivo) {
+      try { r.start(); } catch (e) { ao_vivo = false; atualizarBotoes(); }
+    }
+  };
+  r.onerror = e => {
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+      ao_vivo = false;
+      pararMicrofone();
+      mostrarAviso('Microfone bloqueado. Libere o microfone para este site nas configurações do navegador.');
+      atualizarBotoes();
+    }
+  };
+  return r;
+}
+
+async function pedirMicrofone() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return null;
+  try {
+    return await navigator.mediaDevices.getUserMedia({ audio: true });
+  } catch (e) {
+    return null;
+  }
+}
+
+async function alternarEscuta() {
+  if (ao_vivo) {
+    ao_vivo = false;
+    try { reconhecedor && reconhecedor.stop(); } catch (e) {}
+    pararMicrofone();
+    atualizarBotoes();
+    return;
+  }
+
+  mostrarAviso('Pedindo permissão do microfone...');
+  const stream = await pedirMicrofone();
+  if (!stream) {
+    mostrarAviso('Sem permissão para o microfone. Libere nas configurações do navegador e toque de novo.');
+    return;
+  }
+  iniciarMicrofone(stream);
+
+  if (!reconhecedor) reconhecedor = criarReconhecedor();
+  if (reconhecedor) {
+    try { reconhecedor.start(); } catch (e) {}
+  } else {
+    mostrarAviso('Este navegador não entende fala. Tico aprende ouvindo, mas você pode digitar abaixo.');
+    el('entrada-linha').hidden = false;
+  }
+  ao_vivo = true;
+  el('aviso').hidden = true;
+  atualizarBotoes();
+}
+
+// ---------- Iniciativa: pensa sozinho, sem frases prontas ----------
+function iniciativa() {
+  setInterval(() => {
+    if (ocupado || estado.dormindo) return;
+    if (!mudo && estado.energia > 30 && Math.random() < 0.5) {
+      const ctx = contexto(['curiosidade']);
+      let it = melhorFala(ctx);
+      if (!it) {
+        // Sem nada aprendido sobre curiosidade: uma tentativa de vez em quando, que a sua reacao ensina
+        const pool = confirmados(itensTodos());
+        if (pool.length && Math.random() < 0.4) it = escolher(pool);
+      }
+      if (it) {
+        expressao('curioso');
+        falarItem(it, ctx);
+      }
+    }
+    if (Math.random() < 0.5) gerarNovo();
+  }, 15000);
+}
+
+// ---------- Inicio ----------
+function iniciar() {
+  document.addEventListener('pointerdown', () => { garantirCtx(); }, { once: true });
+  el('btn-live').addEventListener('click', alternarEscuta);
+  mostrarAviso('Aqui você conversa por texto. A escuta por microfone funciona no site do Tico.');
+  el('btn-mudo').addEventListener('click', () => {
+    mudo = !mudo;
+    if (mudo) el('fala').classList.remove('visivel');
+    atualizarBotoes();
+  });
+  el('btn-reiniciar').addEventListener('click', () => {
+    if (!confirm('Apagar tudo o que o Tico aprendeu e lembra, e começar de novo?')) return;
+    try { localStorage.removeItem(CHAVE); } catch (e) {}
+    estado = clone(PADRAO);
+    ocupado = false;
+    expressao('');
+    atualizarAmbiente();
+    el('fala').classList.remove('visivel');
+    atualizarProgresso();
+    dormir('primeiro');
+  });
+
+  el('entrada-linha').addEventListener('submit', e => {
+    e.preventDefault();
+    const texto = el('entrada').value.trim();
+    if (!texto || ocupado || estado.dormindo) return;
+    el('entrada').value = '';
+    enviar(texto);
+  });
+
+  if (!(window.SpeechRecognition || window.webkitSpeechRecognition)) {
+    el('entrada-linha').hidden = false;
+  }
+
+  atualizarAmbiente();
+  atualizarBotoes();
+  atualizarProgresso();
+  expressao(EXPRESSAO[dominante()]);
+
+  // Ao sair da pagina, ele comeca a dormir. Acorda na proxima abertura.
+  const dormirAoSair = () => {
+    if (!estado.dormindo && !ocupado) {
+      estado.dormindo = true;
+      salvar();
+    }
+  };
+  window.addEventListener('pagehide', dormirAoSair);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') dormirAoSair();
+  });
+
+  iniciativa();
+
+  if (!estado.primeiroSono || estado.dormindo) {
+    dormir(estado.primeiroSono ? 'pendente' : 'primeiro');
+  } else {
+    falarPorUmTempo('Estou acordado.', 4000);
+  }
+}
+
+iniciar();
+</script>
+
+</body></html>
